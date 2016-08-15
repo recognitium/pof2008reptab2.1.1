@@ -113,7 +113,7 @@ t_rendimentos_s <-
 
 t_rendimentos_recoded <- merge (t_rendimentos_s, incomeRecodesX)
 # slim t_rendimentos_recoded to only relevant data
-t_rendimentos_recoded <- t_rendimentos_recoded[ , c('cod.rec' , 'cod.uc', 'recmes' , 'fator_expansao1' , 'fator_expansao2' ) ]
+t_rendimentos_recoded <- t_rendimentos_recoded[ , c('cod.rec' , 'cod.uc', 'recmes' , 'fator_expansao1' , 'fator_expansao2','cod.novo' ) ]
 
 ## POTENTIAL PROBLEM IN ORIGINAL DATA (OR CODE) : number of rows is reduced
 # in 8073 rows indicated as 53007, 53008 or 53009 - trainee / rural / familiar with 0 income;
@@ -141,7 +141,7 @@ t_outros_reci_recoded <- merge (t_outros_reci_s,incomeRecodesX)
 # we are still not considering non monetary incomes, expenses and equity variation items
 
 # slim t_outros_reci_recoded to only relevant data
-t_outros_reci_recoded <- t_outros_reci_recoded[ , c('cod.rec' , 'cod.uc', 'recmes' , 'fator_expansao1' , 'fator_expansao2' ) ]
+t_outros_reci_recoded <- t_outros_reci_recoded[ , c('cod.rec' , 'cod.uc', 'recmes' , 'fator_expansao1' , 'fator_expansao2','cod.novo' ) ]
 
 #bind both tables to have a unique table with all needed income booklet data
 allincomes <- rbind(t_rendimentos_recoded,t_outros_reci_recoded)
@@ -220,7 +220,7 @@ tabela_2.1.1 <-
     # specify the income booklet data,
     # which must contain the variables
     # created above
-    t_rendimentos_s = t_rendimentos_s ,
+    allincomes = allincomes ,
     # identify the components table to use
     componentes = componentes ,
     # identify the table to use for post-stratification
@@ -231,9 +231,9 @@ tabela_2.1.1 <-
     incomeCode.plus.subcodes <-
       componentes[ apply( componentes == incomeCode , 1 , any ) , 'codigo' ]
     
-    # isolate family-wide expenditures to only matching codes
-    family.expenditures.by.code <- 
-      t_caderneta_despesa_s[ t_caderneta_despesa_s$codigo %in% curCode.plus.subcodes , c( 'codigo' , 'despmes' , 'cod.uc' ) ]
+    # isolate family-wide incomes to only matching codes
+    family.incomes.by.code <- 
+      allincomes[ allincomes$ %in% curCode.plus.subcodes , c( 'codigo' , 'despmes' , 'cod.uc' ) ]
     
     # aggregate spending to the one-record-per-family-level
     family.level.spending <-
