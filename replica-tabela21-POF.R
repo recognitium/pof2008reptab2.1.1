@@ -8,7 +8,7 @@
 # # # # # # # # # # # # # # # # #
 options( encoding = "latin1" )		# # only macintosh and *nix users need this line
 # library(downloader)
-setwd( "2009/" )
+#setwd( "YOURPROJECTDIR" )
 # surce_url( "https://raw.githubusercontent.com/ajdamico/asdfree/master/Pesquisa%20de%20Orcamentos%20Familiares/replicate%20tabela%201.1.12.R" , prompt = FALSE , echo = TRUE )
 # # # # # # # # # # # # # # #
 # # end of auto-run block # #
@@ -60,27 +60,33 @@ library(stringr)  # pad 0s to uniformize code padding
 options( survey.lonely.psu = "adjust" )
 # this setting matches the MISSUNIT option in SUDAAN
 
-
+## All of the code below assumes your POF microdata has been downloaded into "2009" folder
 # load the person-level data file
-load("t_morador_s.rda")
+load("2009/t_morador_s.rda")
 
 # load the post-stratification table
-load("poststr.rda")
+load("2009/poststr.rda")
 
 # load the household-level data
-load( "t_domicilio_s.rda" )
+load( "2009/t_domicilio_s.rda" )
 
 # load the detailed income data
-load( "t_rendimentos_s.rda" )
+load( "2009/t_rendimentos_s.rda" )
 
 # load products registry data
 load("2009cadastro-produtos.rda")
 
-# load income recodes file ### you probably need to download it first from github repo -- not added to the code yet
-incomeRecodes <- read.csv("codigos-recodificacao-rendimentos.csv",sep = ";")
+# load income recodes file - used for recoding and for generating rows of final table ### you probably need to download it first from github repo -- not added to the code yet
+incomeRecodes <- read.csv("codigos-recodificacao-rendimentos.csv",sep = ";" , as.is = 1:3)
 # recodes to imported data---------------------------------------------------------------------
 # # # # # # # # # # # # #
 # perform a few recodes #
+
+## Prepare incomeRecodes to merge with t_rendimentos_s
+incomeRecodesX <- data.frame()
+for (i in 1:nrow(incomeRecodes)) {incomeRecodesX <- rbind(incomeRecodesX,cbind(incomeRecodes[i,1],eval(parse(text = paste("c(" , incomeRecodes[i,3],")")))))}
+names(incomeRecodesX) <- c("cod.novo","cod.rec")
+
 
 t_rendimentos_s <-
   transform(
@@ -94,24 +100,12 @@ t_rendimentos_s <-
     
     # unique income type code
     cod.rec = paste0( num_quadro, substr(cod_item,1,3))
+    
+    # input recodes of income type according to incomeRecodes table 
   )
 
+t_rendimentos_recoded <- merge (t_rendimentos_s, incomeRecodesX)
 
-
-
-# kept only for reference, not needed in relation to table 2.1.1 -----
-# select only income types from products registry
-# Should be useful for different aggregations if needed
-
-componentes <- componentes_g[componentes_g$QUADRO %in% c(53:55),]
-
-# Create Control equal to income type code
-componentes <- transform (
-  componentes ,
-  cod.rec = paste0( QUADRO, substr(str_pad(CÓDIGO, 5, pad = "0"),1,3))
-  )
-# and select only unique elements from cod.rec
-componentes <- componentes[!duplicated(componentes$cod.rec),]
 
 # construct a unique family code in the person-level data file
 # that will be used to isolate the family-level income variable
