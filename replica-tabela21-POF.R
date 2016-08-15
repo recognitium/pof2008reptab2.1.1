@@ -86,6 +86,9 @@ incomeRecodes <- read.csv("codigos-recodificacao-rendimentos.csv",sep = ";" , as
 # perform a few recodes #
 
 ## Prepare incomeRecodes to merge with t_rendimentos_s
+# Replace non range codings with a dummy value 50000 - in order to be able to generate proper expanded matrix
+incomeRecodes$cod.inc <-gsub(".*\\+.*","50000",incomeRecodes$cod.inc)
+# generate data frame with one number per row and recoded number according to hierarchy in 2.1.1 table and csv file
 incomeRecodesX <- data.frame()
 for (i in 1:nrow(incomeRecodes)) {incomeRecodesX <- rbind(incomeRecodesX,cbind(incomeRecodes[i,1],eval(parse(text = paste("c(" , incomeRecodes[i,3],")")))))}
 names(incomeRecodesX) <- c("cod.novo","cod.rec")
