@@ -197,6 +197,9 @@ rm( t_morador_s )
 # and clear up RAM
 gc()
 
+# Let's see if we can use incomeRecodes table as componentes
+componentes <- incomeRecodes
+
 # to be adapted for 2.1.1 table ---------------------------------------------------------------------
 # big function that does most of the hard work ---------------------------------------------------------------------
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
