@@ -107,7 +107,7 @@ t_rendimentos_s <-
     # unique income type code
     cod.rec = paste0( num_quadro, substr(cod_item,1,3))
     
-    # input recodes of income type according to incomeRecodes table 
+    # input recodes of income type according to incomeRecodes table -- done separately
   )
 
 
@@ -115,8 +115,36 @@ t_rendimentos_recoded <- merge (t_rendimentos_s, incomeRecodesX)
 # slim t_rendimentos_recoded to only relevant data
 t_rendimentos_recoded <- t_rendimentos_recoded[,c('cod.rec', 'cod.uc', 'rec.mes' , 'fator_expansao1' , 'fator_expansao2')]
 
+## POTENTIAL PROBLEM IN ORIGINAL DATA (OR CODE) : number of rows is reduced
+# in 8073 rows indicated as 53007, 53008 or 53009 - trainee / rural / familiar with 0 income;
+# Assess later on if there are problems with estimates to manually include it in incomeRecodesX
 
-## POTENTIAL PROBLEM IN ORIGINAL DATA (OR CODE) : number of rows is reduced, 8073 rows indicated as 53007, 53008 or 53009 - trainee / rural / familiar with 0 income;
+# Some recodes and slim of table with secondary incomes 
+t_outros_reci_s <-
+  transform(
+    t_outros_reci_s ,
+    
+    # monthly income
+    recmes = ( valor_anual_expandido2 / fator_expansao2 ) / 12 ,
+    
+    # unique family code
+    cod.uc = paste0( cod_uf , num_seq , num_dv , cod_domc , num_uc ),
+    
+    # unique income type code
+    cod.rec = paste0( num_quadro, substr(cod_item,1,3))
+  )
+
+# merge on incomeRecodesX to aggregate afterwards
+t_outros_reci_recoded <- merge (t_outros_reci_s,incomeRecodesX)
+
+## WARNING - POTENTIAL SIMILAR PROBLEM THAN ABOVE, but probably because
+# we are still not considering non monetary incomes, expenses and equity variation items
+
+# slim t_outros_reci_recoded to only relevant data
+t_outros_reci_recoded <- t_outros_reci_recoded[,c('cod.rec', 'cod.uc', 'rec.mes' , 'fator_expansao1' , 'fator_expansao2')]
+
+
+
 # construct a unique family code in the person-level data file
 # that will be used to isolate the family-level income variable
 t_morador_s <-
