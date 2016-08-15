@@ -98,7 +98,7 @@ t_rendimentos_s <-
   transform(
     t_rendimentos_s ,
  
-    # monthly income
+    # monthly income - should be equal to rendimento corrigido
     recmes = ( valor_anual_expandido2 / fator_expansao2 ) / 12 ,
     
     # unique family code
@@ -110,8 +110,10 @@ t_rendimentos_s <-
     # input recodes of income type according to incomeRecodes table 
   )
 
-t_rendimentos_recoded <- merge (t_rendimentos_s, incomeRecodesX)
 
+t_rendimentos_recoded <- merge (t_rendimentos_s, incomeRecodesX)
+# slim t_rendimentos_recoded to only relevant data
+t_rendimentos_recoded <- t_rendimentos_recoded[,c('cod.rec', 'cod.uc', 'rec.mes' , 'fator_expansao1' , 'fator_expansao2')]
 
 # construct a unique family code in the person-level data file
 # that will be used to isolate the family-level income variable
