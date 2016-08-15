@@ -143,7 +143,8 @@ t_outros_reci_recoded <- merge (t_outros_reci_s,incomeRecodesX)
 # slim t_outros_reci_recoded to only relevant data
 t_outros_reci_recoded <- t_outros_reci_recoded[ , c('cod.rec' , 'cod.uc', 'recmes' , 'fator_expansao1' , 'fator_expansao2' ) ]
 
-
+#bind both tables to have a unique table with all needed income booklet data
+allincomes <- rbind(t_rendimentos_recoded,t_outros_reci_recoded)
 
 # construct a unique family code in the person-level data file
 # that will be used to isolate the family-level income variable
