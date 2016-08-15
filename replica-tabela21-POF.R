@@ -73,8 +73,11 @@ load( "2009/t_domicilio_s.rda" )
 # load the detailed income data
 load( "2009/t_rendimentos_s.rda" )
 
-# load products registry data
+# load products registry data -- generated from "import-for-other-replicates.R"
 load("2009cadastro-produtos.rda")
+
+# load secondary incomes reception database
+load("2009/t_outros_reci_s.rda")
 
 # load income recodes file - used for recoding and for generating rows of final table ### you probably need to download it first from github repo -- not added to the code yet
 incomeRecodes <- read.csv("codigos-recodificacao-rendimentos.csv",sep = ";" , as.is = 1:3)
