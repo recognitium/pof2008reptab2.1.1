@@ -351,13 +351,13 @@ tabela_2.1.1(
 )
 
 # hey why not run one more
-# `tabela_2.1.1` for baked goods, yum --
+# `tabela_2.1.1` all labour derived income
 
-# panificados	
+# all labour derived income	
 tabela_2.1.1( 
-  "1.6" , 
+  "1.1" , 
   family.level.income ,
-  t_caderneta_despesa_s , 
+  allincomes , 
   componentes , 
   poststr 
 )
