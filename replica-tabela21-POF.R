@@ -1,6 +1,7 @@
 # analyze survey data for free (http://asdfree.com) with the r language
 # This work is inspired and extends previous work from Anthony Damico and Djalma Pessoa
 # pesquisa orcamentos familiares
+# Created by Rodrigo Borges rodrigoborges@gmail.com
 
 # previous ---------------------------------------------------------------------
 # # # # # # # # # # # # # # # # #
