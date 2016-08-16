@@ -199,6 +199,7 @@ gc()
 
 # Let's see if we can use incomeRecodes table as componentes
 componentes <- incomeRecodes
+names(componentes) <- c("cod.novo","tipoderendimento","cod.rec")
 
 # to be adapted for 2.1.1 table ---------------------------------------------------------------------
 # big function that does most of the hard work ---------------------------------------------------------------------
@@ -213,7 +214,7 @@ componentes <- incomeRecodes
 
 tabela_2.1.1 <-
   function(
-    # choose a food code
+    # choose an income code
     incomeCode ,
     # specify the family-level data.frame with the income variable
     family.level.income = family.level.income ,
@@ -229,27 +230,27 @@ tabela_2.1.1 <-
     
     # isolate all records containing the current code *anywhere*
     incomeCode.plus.subcodes <-
-      componentes[ apply( componentes == incomeCode , 1 , any ) , 'codigo' ]
+      componentes[ apply( componentes == incomeCode , 1 , any ) , 'cod.novo' ]
     
     # isolate family-wide incomes to only matching codes
     family.incomes.by.code <- 
-      allincomes[ allincomes$ %in% curCode.plus.subcodes , c( 'codigo' , 'despmes' , 'cod.uc' ) ]
+      allincomes[ allincomes$cod.novo %in% incomeCode.plus.subcodes , c( 'cod.novo' , 'recmes' , 'cod.uc' ) ]
     
-    # aggregate spending to the one-record-per-family-level
-    family.level.spending <-
+    # aggregate incomes to the one-record-per-family-level
+    family.level.income.aggregated <-
       aggregate( 
-        despmes ~ cod.uc , 
-        family.expenditures.by.code , 
+        recmes ~ cod.uc , 
+        family.incomes.by.code , 
         sum 
       )
     
-    # merge the income and expenditure tables,
+    # merge the income and familiar income tables,
     # assuming that the income table has no missings
-    y <- merge( family.level.income , family.level.spending , all.x = TRUE )
+    y <- merge( family.level.income , family.level.income.aggregated , all.x = TRUE )
     
     # all missing values from the left-join above
     # should be converted to zeroes
-    y[ is.na( y$despmes ) , 'despmes' ] <- 0
+    y[ is.na( y$recmes ) , 'recmes' ] <- 0
     
     
     # merge on necessary post-stratification variables..
@@ -289,12 +290,12 @@ tabela_2.1.1 <-
       )
     
     # take the overall mean..
-    st <- svymean( ~despmes , pof.design )
+    st <- svymean( ~recmes , pof.design )
     
     # ..and the mean, broken down by income categories
     sb <- 
       svyby(
-        ~despmes , 
+        ~recmes , 
         ~renda.cat , 
         pof.design , 
         svymean
@@ -321,8 +322,8 @@ tabela_2.1.1 <-
     # stack them
     w <- rbind( ot , ob )
     
-    # throw on the current food expenditure code
-    w$top.codigo <- curCode
+    # throw on the current income type code
+    w$cod.novo <- incomeCode
     
     # finish up with a single row of data,
     # stretched out into `wide` format
