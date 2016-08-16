@@ -230,7 +230,7 @@ tabela_2.1.1 <-
     
     # isolate all records containing the current code *anywhere*
     incomeCode.plus.subcodes <-
-      componentes[substring(componentes$cod.novo,1,nchar(s)) == s,'cod.novo']      
+      componentes[substring(componentes$cod.novo,1,nchar(incomeCode)) == incomeCode,'cod.novo']      
 # old non-functioning  componentes[ apply( componentes == incomeCode , 1 , any ) , 'cod.novo' ]
     
     # isolate family-wide incomes to only matching codes
@@ -352,7 +352,7 @@ tabela_2.1.1(
 )
 
 # hey why not run one more
-# `tabela_2.1.1` all labour derived income
+# `tabela_2.1.1` for all labour derived income
 
 # all labour derived income	
 tabela_2.1.1( 
@@ -368,52 +368,46 @@ tabela_2.1.1(
 # create a table to populate  #
 
 # make an empty, single-column table
-tabela <- data.frame( tipo.de.despesa = NULL )
+tabela <- data.frame( tipo.de.rendimento = NULL )
 
-# for every record in the `componentes` table..
+# for every row in the `componentes` table...
 for ( i in seq( nrow( componentes ) ) ){
-  
-  # for 1, 2, and 3..
-  for ( j in 1:3 ){
-    
-    # if the `desc.#` does not yet exist in the `tabela`..
-    if ( !( componentes[ i , paste0( 'desc.' , j ) ] %in% tabela$tipo.de.despesa ) ){
+# if the `tipoderendimento` does not yet exist in the `tabela`..
+    if ( !( componentes[ i , 'tipoderendimento' ] %in% tabela$tipo.de.rendimento ) ) {
       
       # add a new row, and add that `desc.#` to the `tabela` object..
-      tabela[ nrow( tabela ) + 1 , 'tipo.de.despesa' ] <- 
-        componentes[ i , paste0( 'desc.' , j ) ]
+      tabela[ nrow( tabela ) + 1 , 'tipo.de.rendimento' ] <- 
+        componentes[ i , 'tipoderendimento' ]
       
       # ..and also copy over the current code.
-      tabela[ nrow( tabela ) , 'top.codigo' ] <- 
-        componentes[ i , paste0( 'nivel.' , j ) ]
-      
+      tabela[ nrow( tabela ) , 'cod.novo' ] <- 
+        componentes[ i , 'cod.novo']
     }
-  }
 }
 
 # remove blank records from the final `tabela`
-tabela <- tabela[ tabela$tipo.de.despesa != "" , ]
+# tabela <- tabela[ tabela$tipo.de.rendimento != "" , ] -- not needed
 
 # want to look at the `tabela` object?
 # here are the first six..
-head( tabela )
+#head( tabela )
 
 # ..and the last six records.
-tail( tabela )
+#tail( tabela )
 
 
 # alright.  now scan through each record in the `tabela` data.frame
 for ( i in seq( nrow( tabela ) ) ){
   
   # run the `tabela_2.1.1` function on the current code
-  print( tabela[ i , 'top.codigo' ] )
+  print( tabela[ i , 'cod.novo' ] )
   
   # save the result into a new object `curRow`
   curRow <- 
     tabela_2.1.1( 
-      tabela[ i , 'top.codigo' ] , 
+      tabela[ i , 'cod.novo' ] , 
       family.level.income ,
-      t_caderneta_despesa_s , 
+      allincomes , 
       componentes , 
       poststr 
     )
