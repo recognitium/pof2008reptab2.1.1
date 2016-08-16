@@ -230,7 +230,8 @@ tabela_2.1.1 <-
     
     # isolate all records containing the current code *anywhere*
     incomeCode.plus.subcodes <-
-      componentes[ apply( componentes == incomeCode , 1 , any ) , 'cod.novo' ]
+      componentes[substring(componentes$cod.novo,1,nchar(s)) == s,'cod.novo']      
+# old non-functioning  componentes[ apply( componentes == incomeCode , 1 , any ) , 'cod.novo' ]
     
     # isolate family-wide incomes to only matching codes
     family.incomes.by.code <- 
