@@ -329,7 +329,7 @@ tabela_2.1.1 <-
     # stretched out into `wide` format
     reshape( 
       w , 
-      idvar = 'top.codigo' ,
+      idvar = 'cod.novo' ,
       timevar = 'renda.cat' ,
       direction = 'wide'
     )
@@ -341,11 +341,11 @@ tabela_2.1.1 <-
 # run a single line with our fancy new
 # `tabela_2.1.1` for vegetables --
 
-# legumes e verduras
+# Income as employee
 tabela_2.1.1( 
-  "1.5" , 
+  "1.1.1" , 
   family.level.income ,
-  t_caderneta_despesa_s , 
+  allincomes , 
   componentes , 
   poststr 
 )
